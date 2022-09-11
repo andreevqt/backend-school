@@ -8,8 +8,8 @@
         <version>2.7.1</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
-    <groupId>ru.otus</groupId>
-    <artifactId>library</artifactId>
+    <groupId>api</groupId>
+    <artifactId>rest</artifactId>
     <version>0.0.1</version>
     <name>library</name>
     <description>Library application using jdbc</description>
