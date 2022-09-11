@@ -29,6 +29,7 @@ public class SystemItemMapperImpl implements SystemItemMapper {
 
   @Override
   public SystemItemResponseDto toDto(SystemItem item) {
+
     return new SystemItemResponseDto(
       item.getId(), item.getUrl(), item.getParentId(),
       item.getSize(), item.getType(), item.getDate(),

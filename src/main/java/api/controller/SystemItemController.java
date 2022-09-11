@@ -25,7 +25,9 @@ public class SystemItemController {
 
   @GetMapping("/node/{id}")
   public ResponseEntity<?> get(@PathVariable String id) {
-    return ResponseEntity.ok(systemItemService.get(id));
+    return systemItemService.get(id)
+      .map((item) -> ResponseEntity.ok(mapper.toDto(item)))
+      .orElseThrow(ResourceNotFoundException::new);
   }
 
   @DeleteMapping("/delete/{id}")

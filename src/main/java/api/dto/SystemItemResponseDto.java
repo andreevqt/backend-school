@@ -1,6 +1,8 @@
 package api.dto;
 
+import api.Utils;
 import api.domain.SystemItem.Type;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -29,6 +31,7 @@ public class SystemItemResponseDto {
   @JsonProperty("type")
   private Type type;
 
+  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = Utils.DATE_FORMAT)
   @JsonProperty("date")
   private ZonedDateTime date;
 
