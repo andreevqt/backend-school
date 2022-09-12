@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
 import java.time.ZonedDateTime;
@@ -15,6 +16,7 @@ import java.util.List;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
+@Audited(withModifiedFlag = true)
 public class SystemItem {
 
   public enum Type {
@@ -37,6 +39,7 @@ public class SystemItem {
   @Column(name = "parent_id")
   private String parentId;
 
+  @Audited(withModifiedFlag=false)
   @JoinColumn(name = "parent_id")
   @OneToMany(fetch = FetchType.LAZY)
   private List<SystemItem> children;

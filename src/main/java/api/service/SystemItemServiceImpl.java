@@ -94,14 +94,14 @@ public class SystemItemServiceImpl implements SystemItemService {
     if (parentId != null) {
       itemRepository.findById(parentId).ifPresentOrElse((parent) -> {
         if (parent.getType() != Type.FOLDER) {
-          throw new SystemItemWrongTypeException(String.format("Items's %s has wrong parent type!", newItem.getId()));
+          throw new SystemItemWrongTypeException(String.format("Item id=%s has wrong parent type!", newItem.getId()));
         }
 
-        if (newItem.getId() == parentId) {
-          throw new SystemItemDuplicateException(String.format("Parent with the same id %s", parentId));
+        if (Objects.equals(newItem.getId(), parentId)) {
+          throw new SystemItemDuplicateException(String.format("Parent with the same id=%s", parentId));
         }
       }, () -> {
-        throw new SystemItemParentNotFoundException(String.format("Parent with id %s not found!", parentId));
+        throw new SystemItemParentNotFoundException(String.format("Parent id=%s not found!", parentId));
       });
     }
 

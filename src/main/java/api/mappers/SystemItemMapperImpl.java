@@ -1,6 +1,7 @@
 package api.mappers;
 
 import api.domain.SystemItem;
+import api.dto.SystemItemHistoryDto;
 import api.dto.SystemItemImportDto;
 import api.dto.SystemItemRequestDto;
 import api.dto.SystemItemResponseDto;
@@ -37,6 +38,17 @@ public class SystemItemMapperImpl implements SystemItemMapper {
         ? item.getChildren().stream().map(this::toDto).collect(Collectors.toList())
         : null
     );
+  }
+
+  @Override
+  public SystemItemHistoryDto toHistoryDto(SystemItem item) {
+    return new SystemItemHistoryDto(item.getId(), item.getUrl(), item.getParentId(),
+      item.getType(), item.getSize(), item.getDate());
+  }
+
+  @Override
+  public List<SystemItemHistoryDto> toHistoryDtos(List<SystemItem> items) {
+    return items.stream().map(this::toHistoryDto).collect(Collectors.toList());
   }
 
 }

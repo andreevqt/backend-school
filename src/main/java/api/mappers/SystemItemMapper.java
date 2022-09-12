@@ -1,6 +1,7 @@
 package api.mappers;
 
 import api.domain.SystemItem;
+import api.dto.SystemItemHistoryDto;
 import api.dto.SystemItemRequestDto;
 import api.dto.SystemItemImportDto;
 import api.dto.SystemItemResponseDto;
@@ -15,5 +16,9 @@ public interface SystemItemMapper {
   List<SystemItem> fromImportDto(SystemItemImportDto importDto);
 
   SystemItemResponseDto toDto(SystemItem item);
+
+  SystemItemHistoryDto toHistoryDto(SystemItem item);
+
+  List<SystemItemHistoryDto> toHistoryDtos(List<SystemItem> items);
 
 }
