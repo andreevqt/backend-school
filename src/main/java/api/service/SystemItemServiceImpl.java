@@ -1,6 +1,8 @@
 package api.service;
 
 import api.domain.SystemItem;
+import api.domain.SystemItem.Type;
+import api.exceptions.SystemItemDuplicateException;
 import api.exceptions.SystemItemParentNotFoundException;
 import api.exceptions.SystemItemWrongTypeException;
 import api.repository.SystemItemImportRepository;
@@ -47,7 +49,11 @@ public class SystemItemServiceImpl implements SystemItemService {
     var foldersIds = new HashSet<String>();
 
     IntStream.range(0, 2).forEach((i) -> items.forEach((item) -> {
-      if (ids.contains(item.getId())) {
+      if (ids.contains(item.getId()) && i == 0) {
+        throw new SystemItemDuplicateException(String.format("Same id %s in request body", item.getId()));
+      }
+
+      if (ids.contains(item.getId()) && i == 1) {
         return;
       }
 
@@ -86,8 +92,17 @@ public class SystemItemServiceImpl implements SystemItemService {
   private void updateOrCreate(SystemItem newItem, Set<String> foldersIds) {
     var parentId = newItem.getParentId();
     if (parentId != null) {
-      itemRepository.findById(parentId)
-        .orElseThrow(() -> new SystemItemParentNotFoundException(String.format("Parent with id %s not found!", parentId)));
+      itemRepository.findById(parentId).ifPresentOrElse((parent) -> {
+        if (parent.getType() != Type.FOLDER) {
+          throw new SystemItemWrongTypeException(String.format("Items's %s has wrong parent type!", newItem.getId()));
+        }
+
+        if (newItem.getId() == parentId) {
+          throw new SystemItemDuplicateException(String.format("Parent with the same id %s", parentId));
+        }
+      }, () -> {
+        throw new SystemItemParentNotFoundException(String.format("Parent with id %s not found!", parentId));
+      });
     }
 
     itemRepository.findById(newItem.getId()).ifPresentOrElse((oldItem) -> {

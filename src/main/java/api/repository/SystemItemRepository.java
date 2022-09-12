@@ -29,11 +29,11 @@ public interface SystemItemRepository extends CrudRepository<SystemItem, String>
   List<SystemItem> findParentFolders(@Param("id") String id);
 
   @Query(value = "select si.id, si.parent_id, si.url, si.type, si.date, si.size " +
-    "from SYSTEM_ITEMS as si " +
-    "inner join (select PARENT_ID, CHILD_ID, DEPTH " +
-    "from SYSTEM_ITEM_IMPORTS " +
-    "where PARENT_ID = :id) as sii " +
-    "on si.ID = sii.CHILD_ID", nativeQuery = true)
+    "from system_items as si " +
+    "inner join (select parent_id, child_id, depth " +
+    "from system_item_imports " +
+    "where parent_id = :id) as sii " +
+    "on si.id = sii.child_id", nativeQuery = true)
   List<SystemItem> findAllDescendants(@Param("id") String id);
 
   @EntityGraph(attributePaths = "children")
