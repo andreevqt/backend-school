@@ -15,7 +15,6 @@ import javax.validation.ConstraintViolationException;
 import java.time.format.DateTimeParseException;
 import java.util.Map;
 
-// TODO: parse DateTime exception
 @RestControllerAdvice
 public class CustomExceptionHandler {
 
