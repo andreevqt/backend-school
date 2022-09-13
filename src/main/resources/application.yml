@@ -6,7 +6,7 @@ spring:
     url: jdbc:mysql://localhost:3306/rest
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: root
-    password: 716238
+    password: root
   main:
     allow-circular-references: true
   flyway:
@@ -26,7 +26,7 @@ spring:
       hibernate:
         format_sql: true
 server:
-  port: 8080
+  port: 80
 logging:
   level:
     org:

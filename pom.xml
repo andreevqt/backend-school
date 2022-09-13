@@ -11,8 +11,8 @@
     <groupId>api</groupId>
     <artifactId>rest</artifactId>
     <version>0.0.1</version>
-    <name>library</name>
-    <description>Library application using jdbc</description>
+    <name>app</name>
+    <description>Yet Another Disk Api</description>
     <properties>
         <java.version>11</java.version>
         <flyway.version>8.5.13</flyway.version>
