@@ -11,8 +11,8 @@
     <groupId>api</groupId>
     <artifactId>rest</artifactId>
     <version>0.0.1</version>
-    <name>app</name>
-    <description>Yet Another Disk Api</description>
+    <name>Yet Another Disk Api</name>
+    <description>Backend school test task</description>
     <properties>
         <java.version>11</java.version>
         <flyway.version>8.5.13</flyway.version>
@@ -80,6 +80,7 @@
     </dependencies>
 
     <build>
+        <finalName>app</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>

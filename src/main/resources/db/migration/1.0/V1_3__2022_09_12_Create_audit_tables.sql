@@ -12,7 +12,7 @@ create table system_item_system_item_aud
     id        varchar(255) not null,
     revtype   tinyint(4)   null default null,
     primary key (rev, parent_id, id),
-    foreign key (rev) references rest.revinfo (rev) on update restrict on delete restrict
+    foreign key (rev) references revinfo (rev) on update restrict on delete restrict
 );
 
 create table system_items_aud
@@ -31,5 +31,5 @@ create table system_items_aud
     url           varchar(255) null default null,
     url_mod       bit(1)       null default null,
     primary key (id, rev),
-    foreign key (rev) references rest.revinfo (rev) on update restrict on delete restrict
+    foreign key (rev) references revinfo (rev) on update restrict on delete restrict
 );
