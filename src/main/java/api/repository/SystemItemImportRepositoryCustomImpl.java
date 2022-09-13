@@ -68,10 +68,10 @@ public class SystemItemImportRepositoryCustomImpl implements SystemItemImportRep
 
     em.createNativeQuery("delete " +
         "from system_item_imports " +
-        "where child_id in (" +
+        "where child_id in (select * from (" +
         "select child_id " +
         "from system_item_imports " +
-        "where parent_id = :id)")
+        "where parent_id = :id) t)")
       .setParameter("id", id)
       .executeUpdate();
   }

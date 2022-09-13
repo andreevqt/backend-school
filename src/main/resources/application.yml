@@ -3,7 +3,10 @@ spring:
     image:
       location: classpath:/banner.txt
   datasource:
-    url: jdbc:h2:file:~/rest
+    url: jdbc:mysql://localhost:3306/rest
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: 716238
   main:
     allow-circular-references: true
   flyway:

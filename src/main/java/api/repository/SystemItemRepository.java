@@ -13,7 +13,7 @@ import java.util.Optional;
 @Repository
 public interface SystemItemRepository extends CrudRepository<SystemItem, String> {
 
-  @Query(value = "select coalesce((select sum(size)" +
+  @Query(value = "select coalesce((select sum(size) " +
     "from system_items si " +
     "inner join system_item_imports sii on si.id = sii.child_id " +
     "where sii.parent_id = :id and si.type = 'FILE'), 0)", nativeQuery = true)
