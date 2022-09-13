@@ -29,8 +29,8 @@ public class SystemItemImportRepositoryCustomImpl implements SystemItemImportRep
   public void moveTree(String id, String to) {
     em.createNativeQuery("delete " +
         "from system_item_imports " +
-        "where child_id in (select child_id from system_item_imports where parent_id = :id) " +
-        "and parent_id in (select parent_id from system_item_imports where child_id = :id and parent_id != child_id)")
+        "where child_id in (select a.child_id from (select child_id from system_item_imports where parent_id = :id) as a) " +
+        "and parent_id in (select a.parent_id from (select parent_id from system_item_imports where child_id = :id and parent_id != child_id) as a)")
       .setParameter("id", id)
       .executeUpdate();
 
@@ -68,10 +68,10 @@ public class SystemItemImportRepositoryCustomImpl implements SystemItemImportRep
 
     em.createNativeQuery("delete " +
         "from system_item_imports " +
-        "where child_id in (select * from (" +
+        "where child_id in (select a.child_id from (" +
         "select child_id " +
         "from system_item_imports " +
-        "where parent_id = :id) t)")
+        "where parent_id = :id) a)")
       .setParameter("id", id)
       .executeUpdate();
   }

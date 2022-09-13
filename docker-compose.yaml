@@ -3,16 +3,23 @@ services:
   mysqldb:
     image: mysql:8.0
     restart: always
+    command: --lower_case_table_names=1
     environment:
       - MYSQL_ROOT_PASSWORD=root
       - MYSQL_DATABASE=rest
+    healthcheck:
+      test: [ "CMD-SHELL", 'mysqladmin ping' ]
+      interval: 10s
+      timeout: 2s
+      retries: 10
     volumes:
       - data:/var/lib/mysql
     ports:
       - "3307:3306"
   app:
     depends_on:
-      - mysqldb
+      mysqldb:
+        condition: service_healthy
     build: .
     restart: always
     ports:
