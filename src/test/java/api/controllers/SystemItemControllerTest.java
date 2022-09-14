@@ -27,7 +27,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 public class SystemItemControllerTest {
 
-  private static final ZonedDateTime DATE = ZonedDateTime.parse("2022-02-01T12:00:00.000Z");
+  private static final String DATE = "2022-02-01T12:00:00Z";
 
   private static final SystemItem TREE = new SystemItem(
     "069cb8d7-bbdd-47d3-ad8f-82ef4c269df1",
@@ -48,11 +48,11 @@ public class SystemItemControllerTest {
         128L,
         "069cb8d7-bbdd-47d3-ad8f-82ef4c269df2",
         null,
-        DATE
+        ZonedDateTime.parse(DATE)
       )),
-      DATE
+      ZonedDateTime.parse(DATE)
     )),
-    DATE
+    ZonedDateTime.parse(DATE)
   );
 
   @Autowired
@@ -79,7 +79,7 @@ public class SystemItemControllerTest {
 
     var body = new SystemItemImportDto(
       List.of(itemDto),
-      ZonedDateTime.parse("2022-02-01T12:00:00.000Z"));
+      ZonedDateTime.parse(DATE));
 
     mockMvc.perform(post("/imports")
         .contentType(MediaType.APPLICATION_JSON)
@@ -127,7 +127,7 @@ public class SystemItemControllerTest {
 
     var body = new SystemItemImportDto(
       List.of(itemDto),
-      ZonedDateTime.parse("2022-02-01T12:00:00.000Z")
+      ZonedDateTime.parse(DATE)
     );
 
     mockMvc.perform(post("/imports")
@@ -151,7 +151,7 @@ public class SystemItemControllerTest {
 
     var body = new SystemItemImportDto(
       List.of(itemDto),
-      ZonedDateTime.parse("2022-02-01T12:00:00.000Z")
+      ZonedDateTime.parse(DATE)
     );
 
     mockMvc.perform(post("/imports")
@@ -175,7 +175,7 @@ public class SystemItemControllerTest {
 
     var body = new SystemItemImportDto(
       List.of(itemDto),
-      ZonedDateTime.parse("2022-02-01T12:00:00.000Z")
+      ZonedDateTime.parse(DATE)
     );
 
     mockMvc.perform(post("/imports")
@@ -199,7 +199,7 @@ public class SystemItemControllerTest {
 
     var body = new SystemItemImportDto(
       List.of(itemDto),
-      ZonedDateTime.parse("2022-02-01T12:00:00.000Z")
+      ZonedDateTime.parse(DATE)
     );
 
     mockMvc.perform(post("/imports")
@@ -222,7 +222,7 @@ public class SystemItemControllerTest {
 
     var body = new SystemItemImportDto(
       List.of(itemDto),
-      ZonedDateTime.parse("2022-02-01T12:00:00.000Z")
+      ZonedDateTime.parse(DATE)
     );
 
     mockMvc.perform(post("/imports")
@@ -247,7 +247,7 @@ public class SystemItemControllerTest {
 
     var body = new SystemItemImportDto(
       List.of(itemDto),
-      ZonedDateTime.parse("2022-02-01T12:00:00.000Z")
+      ZonedDateTime.parse(DATE)
     );
 
     mockMvc.perform(post("/imports")
@@ -271,7 +271,7 @@ public class SystemItemControllerTest {
 
     var body = new SystemItemImportDto(
       List.of(itemDto),
-      ZonedDateTime.parse("2022-02-01T12:00:00.000Z")
+      ZonedDateTime.parse(DATE)
     );
 
     mockMvc.perform(post("/imports")
@@ -307,7 +307,7 @@ public class SystemItemControllerTest {
 
     var body = new SystemItemImportDto(
       List.of(itemDto),
-      ZonedDateTime.parse("2022-02-01T12:00:00.000Z")
+      ZonedDateTime.parse(DATE)
     );
 
     mockMvc.perform(post("/imports")
@@ -328,7 +328,7 @@ public class SystemItemControllerTest {
       null,
       null,
       null,
-      ZonedDateTime.parse("2022-02-01T12:00:00.000Z"))
+      ZonedDateTime.parse(DATE))
     );
 
     var itemDto = new SystemItemRequestDto(
@@ -341,7 +341,7 @@ public class SystemItemControllerTest {
 
     var body = new SystemItemImportDto(
       List.of(itemDto),
-      ZonedDateTime.parse("2022-02-01T12:00:00.000Z")
+      ZonedDateTime.parse(DATE)
     );
 
     mockMvc.perform(post("/imports")
@@ -362,7 +362,7 @@ public class SystemItemControllerTest {
         120L,
         null,
         null,
-        ZonedDateTime.parse("2022-02-01T12:00:00.000Z")
+        ZonedDateTime.parse(DATE)
       )
     );
 
@@ -376,7 +376,7 @@ public class SystemItemControllerTest {
 
     var body = new SystemItemImportDto(
       List.of(itemDto),
-      ZonedDateTime.parse("2022-02-01T12:00:00.000Z")
+      ZonedDateTime.parse(DATE)
     );
 
     mockMvc.perform(post("/imports")
@@ -398,6 +398,7 @@ public class SystemItemControllerTest {
       .andExpect(status().isOk())
       .andExpect(jsonPath("$.id").value(TREE.getId()))
       .andExpect(jsonPath("$.size").value(TREE.getSize()))
+      .andExpect(jsonPath("$.date").value(DATE))
       .andExpect(jsonPath("$.children[0].id").value(TREE.getChildren().get(0).getId()))
       .andExpect(jsonPath("$.children[0].size").value(TREE.getChildren().get(0).getSize()))
       .andExpect(jsonPath("$.children[0].children[0].id").value(TREE.getChildren().get(0)
