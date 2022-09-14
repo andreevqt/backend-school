@@ -140,5 +140,4 @@ public class SystemItemServiceImpl implements SystemItemService {
       foldersIds.addAll(getFoldersIds(newItem.getId()));
     });
   }
-
 }

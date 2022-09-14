@@ -1,12 +1,10 @@
 package api.controllers;
 
-import java.time.ZonedDateTime;
-import java.util.List;
-
-import javax.persistence.EntityManager;
-
+import api.Main;
+import api.domain.SystemItem;
+import api.dto.SystemItemImportDto;
+import api.dto.SystemItemRequestDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,12 +14,12 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
-import api.Main;
-import api.domain.SystemItem;
-import api.dto.SystemItemImportDto;
-import api.dto.SystemItemRequestDto;
+import javax.persistence.EntityManager;
+import java.time.ZonedDateTime;
+import java.util.List;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @DisplayName("Controller для работы с файлами")
@@ -58,10 +56,13 @@ public class SystemItemControllerTest {
   );
 
   @Autowired
+  @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
   private EntityManager em;
+  @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
   @Autowired
   private ObjectMapper objectMapper;
   @Autowired
+  @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
   private MockMvc mockMvc;
 
   @DisplayName("POST imports должно возвращать 200 если передан корректный файл")
@@ -355,13 +356,14 @@ public class SystemItemControllerTest {
   @Transactional
   public void imports_shouldReturnBadRequestIfParentIsDirectory() throws Exception {
     em.persist(new SystemItem(
-      "863e1a7a-1304-42ae-943b-179184c077e3",
-      SystemItem.Type.FILE,
-      "",
-      120L,
-      null,
-      null,
-      ZonedDateTime.parse("2022-02-01T12:00:00.000Z"))
+        "863e1a7a-1304-42ae-943b-179184c077e3",
+        SystemItem.Type.FILE,
+        "",
+        120L,
+        null,
+        null,
+        ZonedDateTime.parse("2022-02-01T12:00:00.000Z")
+      )
     );
 
     var itemDto = new SystemItemRequestDto(
@@ -382,5 +384,35 @@ public class SystemItemControllerTest {
         .content(objectMapper.writeValueAsString(body))
         .accept(MediaType.APPLICATION_JSON))
       .andExpect(status().isBadRequest());
+  }
+
+  @DisplayName("GET /nodes/{id} должно возвращать корректный ответ")
+  @Transactional
+  @Test
+  public void imports_shouldReturnCorrectStructure() throws Exception {
+    persistTree();
+
+    mockMvc.perform(get("/nodes/" + TREE.getId())
+        .contentType(MediaType.APPLICATION_JSON)
+        .accept(MediaType.APPLICATION_JSON))
+      .andExpect(status().isOk())
+      .andExpect(jsonPath("$.id").value(TREE.getId()))
+      .andExpect(jsonPath("$.size").value(TREE.getSize()))
+      .andExpect(jsonPath("$.children[0].id").value(TREE.getChildren().get(0).getId()))
+      .andExpect(jsonPath("$.children[0].size").value(TREE.getChildren().get(0).getSize()))
+      .andExpect(jsonPath("$.children[0].children[0].id").value(TREE.getChildren().get(0)
+        .getChildren().get(0).getId()));
+  }
+
+  private void persistTree() {
+    persistItem(TREE);
+  }
+
+  private void persistItem(SystemItem item) {
+    em.persist(item);
+    var children = item.getChildren();
+    if (children != null) {
+      children.forEach(this::persistItem);
+    }
   }
 }

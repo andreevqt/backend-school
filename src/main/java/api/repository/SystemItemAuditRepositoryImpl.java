@@ -43,15 +43,14 @@ public class SystemItemAuditRepositoryImpl implements SystemItemAuditRepository 
   public List<SystemItem> findUpdated(ZonedDateTime to) {
     var from = to.minusHours(24);
     return em.createNativeQuery(
-        "select sii1.id, sii1.parent_id, sii1.size, sii1.type, sii1.url, sii1.date " +
-          "from SYSTEM_ITEMS_AUD sii1 " +
+        "select si.id, si.parent_id, si.size, si.type, si.url, si.date " +
+          "from system_items si " +
           "inner join (" +
-          " select id, max(date) as date " +
+          " select id " +
           " from system_items_aud " +
-          " where TYPE = 'FILE' and date_mod = true and date >= :from and date <= :to group by id" +
-          ") sii2 " +
-          "on sii1.ID = sii2.id and sii1.date = sii2.date " +
-          "inner join system_items as si on si.id = sii2.id",
+          " where TYPE = 'FILE' and date_mod = true and date >= :from and date <= :to " +
+          ") sia " +
+          "on si.id = sia.id ",
         SystemItem.class)
       .setParameter("from", from.toString())
       .setParameter("to", to.toString())
