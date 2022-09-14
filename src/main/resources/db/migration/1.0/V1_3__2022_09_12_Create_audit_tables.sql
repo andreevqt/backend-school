@@ -24,7 +24,7 @@ create table system_items_aud
     date_mod      bit(1)       null default null,
     parent_id     varchar(255) null default null,
     parent_id_mod bit(1)       null default null,
-    size          bigint(20)   null default null,
+    size          bigint(20)   unsigned null default null,
     size_mod      bit(1)       null default null,
     type          varchar(255) null default null,
     type_mod      bit(1)       null default null,
