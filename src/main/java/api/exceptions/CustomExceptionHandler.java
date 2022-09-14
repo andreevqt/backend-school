@@ -28,7 +28,7 @@ public class CustomExceptionHandler {
       DateTimeParseException.class,
       HttpMessageNotReadableException.class
   })
-  public ResponseEntity<?> handleBadRequest() {
+  public ResponseEntity<?> handleBadRequest(Exception e) {
     return ResponseEntity.status(HttpStatus.BAD_REQUEST)
         .body(Map.of("code", HttpStatus.BAD_REQUEST.value(), "message", "Validation Failed"));
   }
