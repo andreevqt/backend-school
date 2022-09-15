@@ -33,7 +33,7 @@ public class SystemItemControllerTest {
     "069cb8d7-bbdd-47d3-ad8f-82ef4c269df1",
     SystemItem.Type.FOLDER,
     null,
-    128L,
+    256L,
     null,
     List.of(new SystemItem(
       "069cb8d7-bbdd-47d3-ad8f-82ef4c269df2",
@@ -50,6 +50,14 @@ public class SystemItemControllerTest {
         null,
         ZonedDateTime.parse(DATE)
       )),
+      ZonedDateTime.parse(DATE)
+    ), new SystemItem(
+      "863e1a7a-1304-42ae-943b-179184c077e3",
+      SystemItem.Type.FILE,
+      "/file/url2",
+      128L,
+      "069cb8d7-bbdd-47d3-ad8f-82ef4c269df1",
+      null,
       ZonedDateTime.parse(DATE)
     )),
     ZonedDateTime.parse(DATE)
@@ -384,6 +392,40 @@ public class SystemItemControllerTest {
         .content(objectMapper.writeValueAsString(body))
         .accept(MediaType.APPLICATION_JSON))
       .andExpect(status().isBadRequest());
+  }
+
+  @DisplayName("POST imports должно корректно перемещать папку")
+  @Test
+  @Transactional
+  public void imports_shouldMoveDirectoryCorrectly() throws Exception {
+    persistTree();
+
+    var itemDto = new SystemItemRequestDto(
+      "069cb8d7-bbdd-47d3-ad8f-82ef4c269df2",
+      null,
+      null,
+      null,
+      SystemItem.Type.FOLDER
+    );
+
+    var body = new SystemItemImportDto(
+      List.of(itemDto),
+      ZonedDateTime.parse(DATE)
+    );
+
+    mockMvc.perform(post("/imports")
+        .contentType(MediaType.APPLICATION_JSON)
+        .content(objectMapper.writeValueAsString(body))
+        .accept(MediaType.APPLICATION_JSON))
+      .andExpect(status().isOk());
+
+    mockMvc.perform(get("/nodes/" + TREE.getId())
+      .contentType(MediaType.APPLICATION_JSON)
+      .accept(MediaType.APPLICATION_JSON))
+    .andExpect(status().isOk())
+    .andExpect(jsonPath("$.id").value(TREE.getId()))
+    .andExpect(jsonPath("$.size").value(128L))
+    .andExpect(jsonPath("$.date").value(DATE));
   }
 
   @DisplayName("GET /nodes/{id} должно возвращать корректный ответ")
