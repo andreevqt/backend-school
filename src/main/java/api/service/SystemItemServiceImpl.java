@@ -14,7 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.ZonedDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 @AllArgsConstructor
 @Service
@@ -26,7 +25,7 @@ public class SystemItemServiceImpl implements SystemItemService {
   @Transactional(readOnly = true)
   @Override
   public Optional<SystemItem> get(String id) {
-    return itemRepository.findById(id);
+    return itemRepository.findWithChildrenById(id);
   }
 
   @Transactional
@@ -45,28 +44,33 @@ public class SystemItemServiceImpl implements SystemItemService {
   @Transactional
   @Override
   public void doImport(List<SystemItem> items, ZonedDateTime date) {
+    // All ids within a single request must be unique.
     var ids = new HashSet<String>();
-    var foldersIds = new HashSet<String>();
-
-    IntStream.range(0, 2).forEach((i) -> items.forEach((item) -> {
-      if (ids.contains(item.getId()) && i == 0) {
+    for (var item : items) {
+      if (!ids.add(item.getId())) {
         throw new SystemItemDuplicateException(String.format("Same id %s in request body", item.getId()));
       }
+    }
 
-      if (ids.contains(item.getId()) && i == 1) {
-        return;
-      }
+    var foldersIds = new HashSet<String>();
 
-      try {
-        updateOrCreate(item, foldersIds);
-        ids.add(item.getId());
-      } catch (Exception e) {
-        if (e instanceof SystemItemParentNotFoundException && i == 0) {
-          return;
+    var pending = new ArrayList<>(items);
+    while (!pending.isEmpty()) {
+      var deferred = new ArrayList<SystemItem>();
+      for (var item : pending) {
+        try {
+          updateOrCreate(item, foldersIds);
+        } catch (SystemItemParentNotFoundException e) {
+          deferred.add(item);
         }
-        throw e;
       }
-    }));
+      if (deferred.size() == pending.size()) {
+        // No item could be placed this pass: a referenced parent is genuinely missing.
+        throw new SystemItemParentNotFoundException(
+          String.format("Parent id=%s not found!", deferred.get(0).getParentId()));
+      }
+      pending = deferred;
+    }
 
     updateFolders(foldersIds, date);
   }

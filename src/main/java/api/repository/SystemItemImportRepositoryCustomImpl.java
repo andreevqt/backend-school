@@ -5,25 +5,12 @@ import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import java.util.Optional;
 
 @Repository
 public class SystemItemImportRepositoryCustomImpl implements SystemItemImportRepositoryCustom {
 
   @PersistenceContext
   EntityManager em;
-
-  @Override
-  public Optional<SystemItemImport> findRoot(String id) {
-    SystemItemImport res = (SystemItemImport) em.createNativeQuery("select * from system_item_imports " +
-        "where child_id = :id " +
-        "order by depth desc " +
-        "limit 1", SystemItemImport.class)
-      .setParameter("id", id)
-      .getSingleResult();
-
-    return Optional.ofNullable(res);
-  }
 
   @Override
   public void moveTree(String id, String to) {

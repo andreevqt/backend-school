@@ -2,11 +2,7 @@ package api.repository;
 
 import api.domain.SystemItemImport;
 
-import java.util.Optional;
-
 public interface SystemItemImportRepositoryCustom {
-
-  Optional<SystemItemImport> findRoot(String id);
 
   void moveTree(String id, String to);
 

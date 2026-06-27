@@ -398,6 +398,45 @@ public class SystemItemControllerTest {
       .andExpect(status().isBadRequest());
   }
 
+  @DisplayName("POST imports должно импортировать вложенную цепочку при обратном порядке в одном запросе")
+  @Test
+  @Transactional
+  public void imports_shouldImportReverseOrderedChainInSingleRequest() throws Exception {
+    var rootId = "069cb8d7-bbdd-47d3-ad8f-82ef4c269df1";
+    var childId = "069cb8d7-bbdd-47d3-ad8f-82ef4c269df2";
+    var fileId = "863e1a7a-1304-42ae-943b-179184c077e4";
+
+    var file = new SystemItemRequestDto(fileId, "/file/url1", childId, 128L, SystemItem.Type.FILE);
+    var child = new SystemItemRequestDto(childId, null, rootId, null, SystemItem.Type.FOLDER);
+    var root = new SystemItemRequestDto(rootId, null, null, null, SystemItem.Type.FOLDER);
+
+    var body = new SystemItemImportDto(
+      List.of(file, child, root),
+      ZonedDateTime.parse(DATE)
+    );
+
+    mockMvc.perform(post("/imports")
+        .contentType(MediaType.APPLICATION_JSON)
+        .content(objectMapper.writeValueAsString(body))
+        .accept(MediaType.APPLICATION_JSON))
+      .andExpect(status().isOk())
+      .andExpect(content().string("OK"));
+
+    em.flush();
+    em.clear();
+
+    mockMvc.perform(get("/nodes/" + rootId)
+        .contentType(MediaType.APPLICATION_JSON)
+        .accept(MediaType.APPLICATION_JSON))
+      .andExpect(status().isOk())
+      .andExpect(jsonPath("$.id").value(rootId))
+      .andExpect(jsonPath("$.size").value(128))
+      .andExpect(jsonPath("$.children[0].id").value(childId))
+      .andExpect(jsonPath("$.children[0].size").value(128))
+      .andExpect(jsonPath("$.children[0].children[0].id").value(fileId))
+      .andExpect(jsonPath("$.children[0].children[0].size").value(128));
+  }
+
   @DisplayName("GET /nodes/{id} должно возвращать корректный ответ")
   @Transactional
   @Test

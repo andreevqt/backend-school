@@ -1,5 +1,7 @@
 package api.exceptions;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.TypeMismatchException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +19,8 @@ import java.util.Map;
 
 @RestControllerAdvice
 public class CustomExceptionHandler {
+
+  private static final Logger log = LoggerFactory.getLogger(CustomExceptionHandler.class);
 
   @ExceptionHandler({
       SystemItemException.class,
@@ -41,8 +45,7 @@ public class CustomExceptionHandler {
 
   @ExceptionHandler(value = { Exception.class })
   public ResponseEntity<?> handleServerError(Exception e) {
-    System.out.println("Here");
-    e.printStackTrace();
+    log.error("Unhandled exception", e);
     return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
         .body(Map.of("code", HttpStatus.INTERNAL_SERVER_ERROR.value(), "message", "Internal Server Error"));
   }

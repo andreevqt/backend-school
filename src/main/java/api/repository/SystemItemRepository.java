@@ -32,11 +32,12 @@ public interface SystemItemRepository extends CrudRepository<SystemItem, String>
     "from system_items as si " +
     "inner join (select parent_id, child_id, depth " +
     "from system_item_imports " +
-    "where parent_id = :id) as sii " +
+    "where parent_id = :id and child_id != :id) as sii " +
     "on si.id = sii.child_id", nativeQuery = true)
   List<SystemItem> findAllDescendants(@Param("id") String id);
 
   @EntityGraph(attributePaths = "children")
-  Optional<SystemItem> findById(String id);
+  @Query("select si from SystemItem si where si.id = :id")
+  Optional<SystemItem> findWithChildrenById(@Param("id") String id);
 
 }

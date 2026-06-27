@@ -1,7 +1,6 @@
 package api.repository;
 
 import api.domain.SystemItem;
-import lombok.AllArgsConstructor;
 import org.hibernate.envers.AuditReader;
 import org.hibernate.envers.query.AuditEntity;
 import org.springframework.stereotype.Repository;
@@ -11,15 +10,17 @@ import javax.persistence.PersistenceContext;
 import java.time.ZonedDateTime;
 import java.util.List;
 
-// TODO: fixme
 @Repository
-@AllArgsConstructor
 public class SystemItemAuditRepositoryImpl implements SystemItemAuditRepository {
 
   private final AuditReader reader;
 
   @PersistenceContext
-  private final EntityManager em;
+  private EntityManager em;
+
+  public SystemItemAuditRepositoryImpl(AuditReader reader) {
+    this.reader = reader;
+  }
 
   @Override
   public List<SystemItem> findHistory(SystemItem item, ZonedDateTime dateStart, ZonedDateTime dateEnd) {
