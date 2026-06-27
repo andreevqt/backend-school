@@ -12,8 +12,16 @@ public class SystemItemImportRepositoryCustomImpl implements SystemItemImportRep
   @PersistenceContext
   EntityManager em;
 
+  /**
+   * Re-parents the subtree rooted at {@code id} under {@code to} in the closure table.
+   * Step 1 severs every closure edge that linked the moving subtree (the descendants
+   * of {@code id}) to its old ancestors. Step 2 re-creates those edges from the new
+   * ancestors (the ancestors of {@code to}) to each descendant, with the depth being
+   * ancestor-depth + descendant-depth + 1. Intra-subtree edges are left untouched.
+   */
   @Override
   public void moveTree(String id, String to) {
+    // Step 1: drop edges from the subtree's old ancestors to every subtree node.
     em.createNativeQuery("delete " +
         "from system_item_imports " +
         "where child_id in (select a.child_id from (select child_id from system_item_imports where parent_id = :id) as a) " +
@@ -21,7 +29,8 @@ public class SystemItemImportRepositoryCustomImpl implements SystemItemImportRep
       .setParameter("id", id)
       .executeUpdate();
 
-    // move to the new location
+    // Step 2: link each new ancestor (ancestors of :to, rows a) to each subtree node
+    // (descendants of :id, rows b), summing depths and adding 1 for the new hop.
     em.createNativeQuery("insert into system_item_imports (parent_id, child_id, depth) " +
         "select a.parent_id, b.child_id, a.depth + b.depth + 1 " +
         "from system_item_imports a " +
