@@ -17,6 +17,7 @@ import javax.validation.constraints.NotNull;
 public class SystemItemImportDto {
 
   @Valid
+  @NotNull
   @JsonProperty("items")
   private List<SystemItemRequestDto> items;
 
