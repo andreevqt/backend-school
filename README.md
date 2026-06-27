@@ -1,4 +1,7 @@
 # Вступительное задание в Осеннюю Школу Бэкенд Разработки Яндекса 2022
+
+[![CI](https://github.com/andreevqt/backend-school/actions/workflows/ci.yml/badge.svg)](https://github.com/andreevqt/backend-school/actions/workflows/ci.yml)
+
 ## О проекте в этом репозитории
 Бэкенд для веб-сервиса хранения файлов, аналогичный сервису [Яндекс Диск](https://yandex.ru/disk)
 
