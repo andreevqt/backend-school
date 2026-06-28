@@ -7,6 +7,8 @@
 
 Оргинальное [ТЗ](Task.md), [OpenAPI](openapi.yaml) спека. Для храненения каталога используется Closure table. Наверное, это не самое лучшее решение, но такой подход был реализован ради академических целей.
 
+**Стек**: Spring Boot, hibernate/hibernate envers, mysql
+
 [Задание](Task.md)
 ## Установка
 ### Docker
