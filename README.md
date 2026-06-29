@@ -3,7 +3,7 @@
 [![CI](https://github.com/andreevqt/backend-school/actions/workflows/ci.yml/badge.svg)](https://github.com/andreevqt/backend-school/actions/workflows/ci.yml)
 
 ## О проекте в этом репозитории
-Мое старое тестовое в ШБР 2022 — rest api для сервиса хранения файлов аналогичный сервису [Яндекс Диск](https://yandex.ru/disk).
+Мое старое тестовое в ШБР 2022 — rest api для сервиса хранения файлов.
 
 Оргинальное [ТЗ](Task.md), [OpenAPI](openapi.yaml) спека. Для храненения каталога используется Closure table. Наверное, это не самое лучшее решение, но такой подход был реализован ради академических целей.
 
